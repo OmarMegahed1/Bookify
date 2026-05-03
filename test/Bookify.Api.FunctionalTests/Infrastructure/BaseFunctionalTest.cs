@@ -22,7 +22,7 @@ public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFac
                 UserData.RegisterTestUserRequest.Email,
                 UserData.RegisterTestUserRequest.Password));
 
-        var accessTokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();
+        AccessTokenResponse? accessTokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();
 
         return accessTokenResponse!.AccessToken;
     }

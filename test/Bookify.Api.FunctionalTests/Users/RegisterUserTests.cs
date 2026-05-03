@@ -35,7 +35,7 @@ public class RegisterUserTests : BaseFunctionalTest
         var request = new RegisterUserRequest(email, firstName, lastName, password);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/v1/users/register", request);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/users/register", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -48,7 +48,7 @@ public class RegisterUserTests : BaseFunctionalTest
         var request = new RegisterUserRequest("create@test.com", "first", "last", "12345");
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/v1/users/register", request);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/users/register", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

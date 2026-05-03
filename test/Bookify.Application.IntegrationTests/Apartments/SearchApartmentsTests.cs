@@ -1,5 +1,6 @@
 ﻿using Bookify.Application.Apartments.SearchApartments;
 using Bookify.Application.IntegrationTests.Infrastructure;
+using Bookify.Domain.Abstractions;
 using FluentAssertions;
 
 namespace Bookify.Application.IntegrationTests.Apartments;
@@ -18,7 +19,7 @@ public class SearchApartmentsTests : BaseIntegrationTest
         var query = new SearchApartmentsQuery(new DateOnly(2024, 1, 10), new DateOnly(2024, 1, 1));
 
         // Act
-        var result = await Sender.Send(query);
+        Result<IReadOnlyList<ApartmentResponse>> result = await Sender.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -32,7 +33,7 @@ public class SearchApartmentsTests : BaseIntegrationTest
         var query = new SearchApartmentsQuery(new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 10));
 
         // Act
-        var result = await Sender.Send(query);
+        Result<IReadOnlyList<ApartmentResponse>> result = await Sender.Send(query);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

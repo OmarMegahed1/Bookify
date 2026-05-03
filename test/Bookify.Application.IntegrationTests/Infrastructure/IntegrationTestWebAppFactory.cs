@@ -41,20 +41,22 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         {
             services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
 
+            string connectionString = $"{_dbContainer.GetConnectionString()};Pooling=False";
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options
-                    .UseNpgsql(_dbContainer.GetConnectionString())
+                    .UseNpgsql(connectionString)
                     .UseSnakeCaseNamingConvention());
 
             services.RemoveAll(typeof(ISqlConnectionFactory));
 
             services.AddSingleton<ISqlConnectionFactory>(_ =>
-                new SqlConnectionFactory(_dbContainer.GetConnectionString()));
+                new SqlConnectionFactory(connectionString));
 
             services.Configure<RedisCacheOptions>(redisCacheOptions =>
                 redisCacheOptions.Configuration = _redisContainer.GetConnectionString());
 
-            var keycloakAddress = _keycloakContainer.GetBaseAddress();
+            string? keycloakAddress = _keycloakContainer.GetBaseAddress();
 
             services.Configure<KeycloakOptions>(o =>
             {

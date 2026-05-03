@@ -1,5 +1,6 @@
 ﻿using Bookify.Application.Bookings.GetBooking;
 using Bookify.Application.IntegrationTests.Infrastructure;
+using Bookify.Domain.Abstractions;
 using Bookify.Domain.Bookings;
 using FluentAssertions;
 
@@ -21,7 +22,7 @@ public class GetBookingTests : BaseIntegrationTest
         var query = new GetBookingQuery(BookingId);
 
         // Act
-        var result = await Sender.Send(query);
+        Result<BookingResponse> result = await Sender.Send(query);
 
         // Assert
         result.Error.Should().Be(BookingErrors.NotFound);

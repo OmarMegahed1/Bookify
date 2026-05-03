@@ -11,7 +11,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void CommandHandler_ShouldHave_NameEndingWith_CommandHandler()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .ImplementInterface(typeof(ICommandHandler<>))
             .Or()
@@ -26,7 +26,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void CommandHandler_Should_NotBePublic()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .ImplementInterface(typeof(ICommandHandler<>))
             .Or()
@@ -41,7 +41,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void QueryHandler_ShouldHave_NameEndingWith_QueryHandler()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .ImplementInterface(typeof(IQueryHandler<,>))
             .Should()
@@ -54,7 +54,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void QueryHandler_Should_NotBePublic()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .ImplementInterface(typeof(IQueryHandler<,>))
             .Should()
@@ -67,7 +67,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void Validator_ShouldHave_NameEndingWith_Validator()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .Inherit(typeof(AbstractValidator<>))
             .Should()
@@ -80,7 +80,7 @@ public class ApplicationTests : BaseTest
     [Fact]
     public void Validator_Should_NotBePublic()
     {
-        var result = Types.InAssembly(ApplicationAssembly)
+        TestResult result = Types.InAssembly(ApplicationAssembly)
             .That()
             .Inherit(typeof(AbstractValidator<>))
             .Should()

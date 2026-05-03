@@ -26,7 +26,7 @@ public class UserTests : BaseTest
         var user = User.Create(UserData.FirstName, UserData.LastName, UserData.Email);
 
         // Assert
-        var userCreatedDomainEvent = AssertDomainEventWasPublished<UserCreatedDomainEvent>(user);
+        UserCreatedDomainEvent userCreatedDomainEvent = AssertDomainEventWasPublished<UserCreatedDomainEvent>(user);
 
         userCreatedDomainEvent.UserId.Should().Be(user.Id);
     }
