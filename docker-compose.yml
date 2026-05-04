@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   bookify.api:
     image: ${DOCKER_REGISTRY-}bookifyapi
@@ -7,11 +5,19 @@ services:
     build:
       context: .
       dockerfile: src/Bookify.Api/Dockerfile
+    restart: unless-stopped
     depends_on:
-      - bookify-db
+      bookify-db:
+        condition: service_healthy
+      bookify-redis:
+        condition: service_healthy
+      bookify-idp:
+        condition: service_started
+      bookify-seq:
+        condition: service_started
 
   bookify-db:
-    image: postgres:latest
+    image: postgres:16
     container_name: Bookify.Db
     environment:
       - POSTGRES_DB=bookify
@@ -21,6 +27,12 @@ services:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d bookify" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   bookify-idp:
     image: quay.io/keycloak/keycloak:latest
@@ -40,7 +52,14 @@ services:
     container_name: Bookify.Seq
     environment:
       - ACCEPT_EULA=Y
+      # - SEQ_FIRSTRUN_ADMINPASSWORD=admin123
+      # Plain SEQ_FIRSTRUN_ADMINPASSWORD forces a password change and often breaks first UI login.
+      # Hash matches password admin123 (generate: docker run --rm --entrypoint /bin/sh datalust/seq:latest -c "printf '%s' YOURPASS | /seqsvr/Seq config hash").
+      - 'SEQ_FIRSTRUN_ADMINPASSWORDHASH=QCSg2v1PehO3HPYKrfujPdBN5Es343y91cSy9nzHUCb6AyqBzcSgduNIFOireRnBnF+cS6+W+3bxGipLIaQwPFfSNuMTkNRBKrBeLbl+tjHi'
+    volumes:
+      - ./.containers/seq:/data
     ports:
+      # UI: http://localhost:8081 — Serilog uses host port 5341 (ingestion).
       - 5341:5341
       - 8081:80
 
@@ -50,3 +69,9 @@ services:
     restart: always
     ports:
       - '6379:6379'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s

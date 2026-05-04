@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Local Docker Compose volume mounts (Postgres, Keycloak, Seq, etc.)
+.containers/
+
 # User-specific files
 *.rsuser
 *.suo
