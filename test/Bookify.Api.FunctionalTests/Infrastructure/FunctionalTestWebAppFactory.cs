@@ -43,20 +43,22 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         {
             services.RemoveAll(typeof(DbContextOptions<ApplicationDbContext>));
 
+            string connectionString = $"{_dbContainer.GetConnectionString()};Pooling=False";
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options
-                    .UseNpgsql(_dbContainer.GetConnectionString())
+                    .UseNpgsql(connectionString)
                     .UseSnakeCaseNamingConvention());
 
             services.RemoveAll(typeof(ISqlConnectionFactory));
 
             services.AddSingleton<ISqlConnectionFactory>(_ =>
-                new SqlConnectionFactory(_dbContainer.GetConnectionString()));
+                new SqlConnectionFactory(connectionString));
 
             services.Configure<RedisCacheOptions>(redisCacheOptions =>
                 redisCacheOptions.Configuration = _redisContainer.GetConnectionString());
 
-            var keycloakAddress = _keycloakContainer.GetBaseAddress();
+            string? keycloakAddress = _keycloakContainer.GetBaseAddress();
 
             services.Configure<KeycloakOptions>(o =>
             {
@@ -90,8 +92,15 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
     private async Task InitializeTestUserAsync()
     {
-        var httpClient = CreateClient();
+        try
+        {
+            using HttpClient httpClient = CreateClient();
 
-        await httpClient.PostAsJsonAsync("api/v1/users/register", UserData.RegisterTestUserRequest);
+            await httpClient.PostAsJsonAsync("api/v1/users/register", UserData.RegisterTestUserRequest);
+        }
+        catch
+        {
+            // Do nothing.
+        }
     }
 }

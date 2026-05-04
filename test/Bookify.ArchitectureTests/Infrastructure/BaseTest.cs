@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Bookify.ArchitectureTests.Infrastructure;
 
-public class BaseTest
+public abstract class BaseTest
 {
     protected static readonly Assembly ApplicationAssembly = typeof(IBaseCommand).Assembly;
 

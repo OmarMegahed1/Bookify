@@ -1,4 +1,5 @@
-﻿using Bookify.Domain.Bookings;
+﻿using Bookify.Domain.Apartments;
+using Bookify.Domain.Bookings;
 using Bookify.Domain.Bookings.Events;
 using Bookify.Domain.Shared;
 using Bookify.Domain.UnitTests.Apartments;
@@ -18,14 +19,14 @@ public class BookingTests : BaseTest
         var user = User.Create(UserData.FirstName, UserData.LastName, UserData.Email);
         var price = new Money(10.0m, Currency.Usd);
         var duration = DateRange.Create(new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 10));
-        var apartment = ApartmentData.Create(price);
+        Apartment apartment = ApartmentData.Create(price);
         var pricingService = new PricingService();
 
         // Act
         var booking = Booking.Reserve(apartment, user.Id, duration, DateTime.UtcNow, pricingService);
 
         // Assert
-        var bookingReservedDomainEvent = AssertDomainEventWasPublished<BookingReservedDomainEvent>(booking);
+        BookingReservedDomainEvent bookingReservedDomainEvent = AssertDomainEventWasPublished<BookingReservedDomainEvent>(booking);
 
         bookingReservedDomainEvent.BookingId.Should().Be(booking.Id);
     }

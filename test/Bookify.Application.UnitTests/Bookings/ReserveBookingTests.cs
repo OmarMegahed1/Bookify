@@ -56,7 +56,7 @@ public class ReserveBookingTests
             .Returns((User?)null);
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         result.Error.Should().Be(UserErrors.NotFound);
@@ -66,7 +66,7 @@ public class ReserveBookingTests
     public async Task Handle_Should_ReturnFailure_WhenApartmentIsNull()
     {
         // Arrange
-        var user = UserData.Create();
+        User user = UserData.Create();
 
         _userRepositoryMock
             .GetByIdAsync(Command.UserId, Arg.Any<CancellationToken>())
@@ -77,7 +77,7 @@ public class ReserveBookingTests
             .Returns((Apartment?)null);
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         result.Error.Should().Be(ApartmentErrors.NotFound);
@@ -87,8 +87,8 @@ public class ReserveBookingTests
     public async Task Handle_Should_ReturnFailure_WhenApartmentIsBooked()
     {
         // Arrange
-        var user = UserData.Create();
-        var apartment = ApartmentData.Create();
+        User user = UserData.Create();
+        Apartment apartment = ApartmentData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -104,7 +104,7 @@ public class ReserveBookingTests
             .Returns(true);
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         result.Error.Should().Be(BookingErrors.Overlap);
@@ -114,8 +114,8 @@ public class ReserveBookingTests
     public async Task Handle_Should_ReturnFailure_WhenUnitOfWorkThrows()
     {
         // Arrange
-        var user = UserData.Create();
-        var apartment = ApartmentData.Create();
+        User user = UserData.Create();
+        Apartment apartment = ApartmentData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -135,7 +135,7 @@ public class ReserveBookingTests
             .ThrowsAsync(new ConcurrencyException("Concurrency", new Exception()));
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         result.Error.Should().Be(BookingErrors.Overlap);
@@ -145,8 +145,8 @@ public class ReserveBookingTests
     public async Task Handle_Should_ReturnSuccess_WhenBookingIsReserved()
     {
         // Arrange
-        var user = UserData.Create();
-        var apartment = ApartmentData.Create();
+        User user = UserData.Create();
+        Apartment apartment = ApartmentData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -162,7 +162,7 @@ public class ReserveBookingTests
             .Returns(false);
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -172,8 +172,8 @@ public class ReserveBookingTests
     public async Task Handle_Should_CallRepository_WhenBookingIsReserved()
     {
         // Arrange
-        var user = UserData.Create();
-        var apartment = ApartmentData.Create();
+        User user = UserData.Create();
+        Apartment apartment = ApartmentData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -188,7 +188,7 @@ public class ReserveBookingTests
             .Returns(false);
 
         // Act
-        var result = await _handler.Handle(Command, default);
+        Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
         _bookingRepositoryMock.Received(1).Add(Arg.Is<Booking>(b => b.Id == result.Value));

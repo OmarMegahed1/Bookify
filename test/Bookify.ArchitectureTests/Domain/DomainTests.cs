@@ -24,7 +24,7 @@ public class DomainTests : BaseTest
     [Fact]
     public void DomainEvent_ShouldHave_DomainEventPostfix()
     {
-        var result = Types.InAssembly(DomainAssembly)
+        TestResult result = Types.InAssembly(DomainAssembly)
             .That()
             .ImplementInterface(typeof(IDomainEvent))
             .Should()

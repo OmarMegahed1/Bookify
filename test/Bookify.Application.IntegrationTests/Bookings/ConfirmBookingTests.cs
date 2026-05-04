@@ -1,5 +1,6 @@
 ﻿using Bookify.Application.Bookings.ConfirmBooking;
 using Bookify.Application.IntegrationTests.Infrastructure;
+using Bookify.Domain.Abstractions;
 using Bookify.Domain.Bookings;
 using FluentAssertions;
 
@@ -21,7 +22,7 @@ public class ConfirmBookingTests : BaseIntegrationTest
         var command = new ConfirmBookingCommand(BookingId);
 
         // Act
-        var result = await Sender.Send(command);
+        Result result = await Sender.Send(command);
 
         // Assert
         result.Error.Should().Be(BookingErrors.NotFound);

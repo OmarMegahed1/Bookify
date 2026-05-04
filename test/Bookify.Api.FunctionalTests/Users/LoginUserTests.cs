@@ -23,7 +23,7 @@ public class LoginUserTests : BaseFunctionalTest
         var request = new LogInUserRequest(Email, Password);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/v1/users/login", request);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/users/login", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -39,7 +39,7 @@ public class LoginUserTests : BaseFunctionalTest
         var request = new LogInUserRequest(Email, Password);
 
         // Act
-        var response = await HttpClient.PostAsJsonAsync("api/v1/users/login", request);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/v1/users/login", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
